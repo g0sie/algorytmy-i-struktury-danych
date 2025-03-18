@@ -1,8 +1,8 @@
 import random as rnd
 import time as tm
 
-# import matplotlib.pyplot as plt
-# import tabulate as tbl
+import matplotlib.pyplot as plt
+import tabulate as tbl
 from typing import List, Callable
 
 
@@ -52,33 +52,67 @@ def get_selection_sorted(lst: List[int]) -> List[int]:
     return lst
 
 
-def get_time_of_sort(
-    sort_func: Callable[[List[int]], List[int]], vectors: List[List[int]]
+def get_time_of_sort(sort_func: Callable[[List[int]], List[int]], vector: List[int]):
+    start = tm.perf_counter_ns()
+    sort_func(vector)
+    stop = tm.perf_counter_ns()
+    return stop - start
+
+
+def print_times_of_sort(
+    lengths, times_of_bubble_sort, times_of_insertion_sort, times_of_selection_sort
 ):
-    times = []
+    data = [
+        [
+            lengths[i],
+            times_of_bubble_sort[i],
+            times_of_insertion_sort[i],
+            times_of_selection_sort[i],
+        ]
+        for i in range(len(lengths))
+    ]
+    headers = ["length", "bubble", "insertion", "selection"]
+    print(tbl.tabulate(data, headers=headers))
 
-    for vector in vectors:
-        start = tm.perf_counter_ns()
-        sort_func(vector)
-        stop = tm.perf_counter_ns()
-        times.append(stop - start)
 
-    return times
+def plot_times_of_sort(
+    lengths, times_of_bubble_sort, times_of_insertion_sort, times_of_selection_sort
+):
+    plt.plot(lengths, times_of_bubble_sort, label="bąbelkowe")
+    plt.plot(lengths, times_of_insertion_sort, label="przez wstawianie")
+    plt.plot(lengths, times_of_selection_sort, label="przez wybieranie")
+    plt.legend()
+    plt.grid()
+
+    plt.xlabel("długość listy")
+    plt.ylabel("czas sortowania [ns]")
+    plt.title("Porównanie czasu sortowania algorytmów")
+
+    plt.show()
 
 
 if __name__ == "__main__":
-    # lst = get_list_of_random_ints(n=5, min=0, max=10)
-    # print(lst)
-    # print(get_bubble_sorted(lst))
-    # print(get_insertion_sorted(lst))
-    # print(get_selection_sorted(lst))
-    # print(lst)
 
     lengths = [50, 100, 200, 500, 1000, 2000]
 
+    # generate vectors to sort
     vectors = [get_list_of_random_ints(n=length, min=0, max=5000) for length in lengths]
 
-    print([len(vector) for vector in vectors])
-    print(get_time_of_sort(sort_func=get_bubble_sorted, vectors=vectors))
-    print(get_time_of_sort(sort_func=get_insertion_sorted, vectors=vectors))
-    print(get_time_of_sort(sort_func=get_selection_sorted, vectors=vectors))
+    # get times of sort functions
+    times_of_bubble_sort = [
+        get_time_of_sort(get_bubble_sorted, vector) for vector in vectors
+    ]
+    times_of_insertion_sort = [
+        get_time_of_sort(get_insertion_sorted, vector) for vector in vectors
+    ]
+    times_of_selection_sort = [
+        get_time_of_sort(get_selection_sorted, vector) for vector in vectors
+    ]
+
+    print_times_of_sort(
+        lengths, times_of_bubble_sort, times_of_insertion_sort, times_of_selection_sort
+    )
+
+    plot_times_of_sort(
+        lengths, times_of_bubble_sort, times_of_insertion_sort, times_of_selection_sort
+    )

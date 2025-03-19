@@ -15,10 +15,16 @@ def get_bubble_sorted(lst: List[int]) -> List[int]:
     n = len(lst)
 
     for i in range(n):
-        for j in range(n - i - 1):
+        swapped = False
+
+        for j in range(n - 1):
 
             if lst[j] > lst[j + 1]:
                 lst[j], lst[j + 1] = lst[j + 1], lst[j]
+                swapped = True
+
+        if not swapped:
+            return lst
 
     return lst
 
@@ -93,6 +99,23 @@ def plot_times_of_sort(
 
 if __name__ == "__main__":
 
+    # zad 1
+    vector = get_list_of_random_ints(n=5, min=0, max=10)
+    print(vector)
+
+    # zad 2
+    bubble_sorted = get_bubble_sorted(vector)
+    insertion_sorted = get_insertion_sorted(vector)
+    selection_sorted = get_selection_sorted(vector)
+
+    print("\nbubble sorted:")
+    print(bubble_sorted)
+    print("\ninsertion sorted:")
+    print(insertion_sorted)
+    print("\nselection sorted:")
+    print(selection_sorted)
+
+    # zad 3
     lengths = [50, 100, 200, 500, 1000, 2000]
 
     # generate vectors to sort
@@ -113,6 +136,7 @@ if __name__ == "__main__":
         lengths, times_of_bubble_sort, times_of_insertion_sort, times_of_selection_sort
     )
 
+    # zad 4
     plot_times_of_sort(
         lengths, times_of_bubble_sort, times_of_insertion_sort, times_of_selection_sort
     )

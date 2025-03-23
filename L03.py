@@ -1,3 +1,6 @@
+from statistics import mean
+import matplotlib.pyplot as plt
+
 from L02 import (
     get_list_of_random_ints,
     get_bubble_sorted,
@@ -19,7 +22,28 @@ def measure_time_n_times(n, lst_length):
     return res
 
 
+def plot_mean_time_of_every_sort_func(lengths, times_of_sort):
+
+    bubble_mean = [mean(lst["bubble"]) for lst in times_of_sort]
+    insertion_mean = [mean(lst["insertion"]) for lst in times_of_sort]
+    selection_mean = [mean(lst["selection"]) for lst in times_of_sort]
+
+    plt.plot(lengths, bubble_mean, label="bubble sort")
+    plt.plot(lengths, insertion_mean, label="insertion sort")
+    plt.plot(lengths, selection_mean, label="selection sort")
+
+    plt.legend()
+    plt.grid()
+
+    plt.xlabel("długość listy")
+    plt.ylabel("czas sortowania [ns]")
+    plt.title("Porównanie średniego czasu sortowania")
+
+    plt.show()
+
+
 if __name__ == "__main__":
 
     lengths = [50, 100, 200, 500, 1000, 2000]
     times_of_sort = [measure_time_n_times(10, length) for length in lengths]
+    plot_mean_time_of_every_sort_func(lengths, times_of_sort)

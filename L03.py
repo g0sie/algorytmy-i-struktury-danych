@@ -26,9 +26,9 @@ def measure_time_n_times(n, lst_length):
 
 def plot_mean_time_of_every_sort_func(times_of_sort):
 
-    bubble_mean = [mean(lst["bubble"]) for lst in times_of_sort]
-    insertion_mean = [mean(lst["insertion"]) for lst in times_of_sort]
-    selection_mean = [mean(lst["selection"]) for lst in times_of_sort]
+    bubble_mean = [mean(dict["bubble"]) for dict in times_of_sort]
+    insertion_mean = [mean(dict["insertion"]) for dict in times_of_sort]
+    selection_mean = [mean(dict["selection"]) for dict in times_of_sort]
 
     plt.plot(LENGTHS, bubble_mean, label="bubble sort")
     plt.plot(LENGTHS, insertion_mean, label="insertion sort")
@@ -46,9 +46,9 @@ def plot_mean_time_of_every_sort_func(times_of_sort):
 
 def plot_stats_of_sort_func(sort_func_key: str, times_of_sort):
 
-    max_time = [max(lst[sort_func_key]) for lst in times_of_sort]
-    mean_time = [mean(lst[sort_func_key]) for lst in times_of_sort]
-    min_time = [min(lst[sort_func_key]) for lst in times_of_sort]
+    max_time = [max(dict[sort_func_key]) for dict in times_of_sort]
+    mean_time = [mean(dict[sort_func_key]) for dict in times_of_sort]
+    min_time = [min(dict[sort_func_key]) for dict in times_of_sort]
 
     plt.plot(LENGTHS, max_time, label="max")
     plt.plot(LENGTHS, mean_time, label="avg")

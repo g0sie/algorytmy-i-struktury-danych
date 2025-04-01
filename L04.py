@@ -1,86 +1,69 @@
 from typing import List
-from L02 import get_list_of_random_ints
+import matplotlib.pyplot as plt
+from statistics import mean
+
+from L02 import get_list_of_random_ints, get_time_of_sort
+from L04_sort import get_merge_sorted, get_counting_sorted, get_quick_sorted
+
+LENGTHS = [50, 100, 200, 500, 1000, 2000]
 
 
-def get_merge_sorted(lst: List[int]) -> List[int]:
-    """Return a new list, sorted with merge sort."""
+def measure_time_n_times(n, lst_length):
+    res = {"merge": [], "counting": [], "quick": []}
 
-    def merge(left: List[int], right: List[int]) -> List[int]:
-        """Merge two lists into one sorted."""
-        result = []
-        i, j = 0, 0
+    for _ in range(n):
+        vector = get_list_of_random_ints(lst_length, min=0, max=5000)
+        res["merge"].append(get_time_of_sort(get_merge_sorted, vector))
+        res["counting"].append(get_time_of_sort(get_counting_sorted, vector))
+        res["quick"].append(get_time_of_sort(get_quick_sorted, vector))
 
-        # compare elements to find smaller one
-        while i < len(left) and j < len(right):
-            if left[i] <= right[j]:
-                result.append(left[i])
-                i += 1
-            else:
-                result.append(right[j])
-                j += 1
-
-        # if only one list left, insert all elements
-        while i < len(left):
-            result.append(left[i])
-            i += 1
-
-        while j < len(right):
-            result.append(right[j])
-            j += 1
-
-        return result
-
-    if len(lst) <= 1:
-        return lst
-
-    n = len(lst) // 2
-    left = lst[:n]
-    right = lst[n:]
-    return merge(get_merge_sorted(left), get_merge_sorted(right))
+    return res
 
 
-def get_counting_sorted(lst: List[int]) -> List[int]:
-    """Return a new list, sorted with counting sort."""
+def plot_mean_time_of_every_sort_func(times_of_sort):
 
-    min_elem = min(lst)
-    max_elem = max(lst)
+    merge_mean = [mean(dict["merge"]) for dict in times_of_sort]
+    counting_mean = [mean(dict["counting"]) for dict in times_of_sort]
+    quick_mean = [mean(dict["quick"]) for dict in times_of_sort]
 
-    # count occurances of a number
-    count_lst = [0 for _ in range(max_elem - min_elem + 1)]
+    plt.plot(LENGTHS, merge_mean, label="merge sort")
+    plt.plot(LENGTHS, counting_mean, label="counting sort")
+    plt.plot(LENGTHS, quick_mean, label="quick sort")
 
-    for elem in lst:
-        count_lst[elem - min_elem] += 1
+    plt.legend()
+    plt.grid()
 
-    # insert numbers in proper order
-    result = []
-    for i, count in enumerate(count_lst):
-        for _ in range(count):
-            result.append(i + min_elem)
+    plt.xlabel("długość listy")
+    plt.ylabel("czas sortowania [ns]")
+    plt.title("Porównanie średniego czasu sortowania")
 
-    return result
+    plt.show()
 
 
-def get_quick_sorted(lst: List[int]) -> List[int]:
-    """Return a new list, sorted with quick sort."""
+def plot_stats_of_sort_func(sort_func_key: str, times_of_sort):
 
-    # TODO: make better version of this algorithm XD
-    # message for later: kocham cię Gosia <3
+    max_time = [max(dict[sort_func_key]) for dict in times_of_sort]
+    mean_time = [mean(dict[sort_func_key]) for dict in times_of_sort]
+    min_time = [min(dict[sort_func_key]) for dict in times_of_sort]
 
-    if len(lst) <= 1:
-        return lst
+    plt.plot(LENGTHS, max_time, label="max")
+    plt.plot(LENGTHS, mean_time, label="avg")
+    plt.plot(LENGTHS, min_time, label="min")
 
-    pivot = lst[-1]
+    plt.legend()
+    plt.grid()
 
-    less = [elem for elem in lst[:-1] if elem <= pivot]
-    greater = [elem for elem in lst[:-1] if elem > pivot]
+    plt.xlabel("długość listy")
+    plt.ylabel("czas sortowania [ns]")
+    plt.title(f"Czas wykonanania {sort_func_key} sort")
 
-    return get_quick_sorted(less) + [pivot] + get_quick_sorted(greater)
+    plt.show()
 
 
 if __name__ == "__main__":
-    # vec = get_list_of_random_ints(n=5, min=0, max=9)
-    vec = [1, 5, 7, 2, 2, 3]
-    # print(vec)
-    print("start: ", vec)
-    sorted = get_counting_sorted(vec)
-    print("result: ", sorted)
+
+    times_of_sort = [measure_time_n_times(100, length) for length in LENGTHS]
+    plot_mean_time_of_every_sort_func(times_of_sort)
+    plot_stats_of_sort_func("merge", times_of_sort)
+    plot_stats_of_sort_func("counting", times_of_sort)
+    plot_stats_of_sort_func("quick", times_of_sort)

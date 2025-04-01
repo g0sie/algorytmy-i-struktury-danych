@@ -7,6 +7,7 @@ from typing import List, Callable
 
 
 def get_list_of_random_ints(n: int, min: int, max: int) -> List[int]:
+    """Return a list of n random integers from range [min, max]"""
     return [rnd.randint(min, max) for _ in range(n)]
 
 

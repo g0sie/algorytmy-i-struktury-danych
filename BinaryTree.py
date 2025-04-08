@@ -1,6 +1,3 @@
-import random
-
-
 class BinaryTree:
     def __init__(self, key):
         self.key = key
@@ -79,16 +76,3 @@ class BinaryTree:
             # jak prawy zajęty to wrzucamy na prawy i lecimy zająć się kolejką
             else:
                 queue.append(node.right)
-
-
-if __name__ == "__main__":
-
-    # zad. 2
-    vector = [random.randint(0, 10) for _ in range(10)]
-
-    tree = BinaryTree(vector[0])
-    for val in vector[1:]:
-        tree.insert_node_simple(val)
-
-    print("\nStruktura drzewa:")
-    print(tree)

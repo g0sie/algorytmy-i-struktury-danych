@@ -1,8 +1,20 @@
 class BinaryHeap:
-    def __init__(self):
-        self.heap = []
-        # rodzic w i -> dzieci w 2i+1, 21+2
-        # dziecko w i -> rodzic w (i-2)//2
+    # rodzic w i -> dzieci w 2i+1, 21+2
+    # dziecko w i -> rodzic w (i-2)//2
+
+    def __init__(self, lst=None):
+        if lst:
+            self.heap = lst[:]
+            n = len(self.heap)
+
+            # budowanie kopca maksymalnego:
+            # n // 2 - 1 =  indeks ostatniego rodzica, który ma dzieci
+            # dla każdego rodzica wyciągamy większy element do góry
+            for i in range(n // 2 - 1, -1, -1):
+                self._heapify_down(i)
+
+        else:
+            self.heap = []
 
     def insert(self, value):
         # dodaj element na koniec i wyciągnij go do góry

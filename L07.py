@@ -118,7 +118,6 @@ def benchmark(files):
     for file in files:
         with open(file, "r", encoding="utf-8") as f:
             text = f.read()
-            print(text)
 
         # kompresja
         start = time.time()
